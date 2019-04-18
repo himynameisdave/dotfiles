@@ -1,0 +1,133 @@
+#!/bin/bash
+
+# Functions
+
+# Make directory and cd into it
+m() {
+  mkdir $1 && cd $_
+}
+
+# Create file and open it
+to() {
+  touch $1 && open $_
+}
+
+# Commit w/o doing pre-commit checks
+lookMomNoHands() {
+  git commit --no-verify -m "$1"
+}
+
+# Sometimes you need to commit nothing
+emptycommit() {
+  git commit --allow-empty -m "$1"
+}
+
+dockerRestart() {
+  docker-compose down
+  docker-compose up
+}
+
+# Get "into" a given container
+dockerssh() {
+  docker exec -it $1 bash
+}
+
+# Returns the process that's running on a port
+onport() {
+  lsof -i :$1
+}
+
+# Kills whatever is running on a specified port
+killport() {
+  kill -9 "$(lsof -i :$1 -t)"
+}
+
+# Installs a new version of node, including installing all the old packages
+installnode () {
+  current="$(node -v)"
+  nvm install $1 --reinstall-packages-from="${current}"
+  nvm use $1
+  nvm alias default $1
+}
+
+# Install ESLint and all peerDependencies
+installeslint() {
+  export PKG=eslint-config-7geese;
+  npm info "$PKG@latest" peerDependencies --json | command sed 's/[\{\},]//g ; s/: /@/g' | xargs npm install --save-dev "$PKG@latest"
+}
+
+# More thorough npm install
+npmin() {
+  rm -rf node_modules/
+  npm cache clean
+  npm i
+}
+
+# Search for a git branch
+findBranch() {
+  git branch | grep $1
+}
+
+# List changes between your branch and staging
+diffCompareStaging() {
+  current="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')"
+  git diff origin/staging $current
+}
+
+# List changes between your branch and staging
+diffCompareStagingStats() {
+  current="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')"
+  git diff origin/staging $current --shortstat
+}
+
+# List the files that have been added or modified since your last commit
+gFileDiff() {
+  echo
+  git diff --name-only `git rev-parse --abbrev-ref HEAD`
+  echo
+}
+
+# Clone and npm install
+gclone() {
+  git clone $1 && npm install
+}
+
+# Push to the origin of the current branch
+gpusho() {
+  current="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')"
+  git push origin $current
+}
+
+# Commit
+gcommit() {
+  g commit -m $1
+}
+
+# Jump over to staging, pull, then go back to the branch you were on and merge with local staging
+merge_staging() {
+	current="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')"
+	git checkout staging && git pull && git checkout $current && git merge staging
+}
+
+# Create a new serverless project based on my boilerplate
+slsnew() {
+  sls create --template-url https://github.com/himynameisdave/dmoney-serverless-boilerplate --path $1
+  cd $1
+  npm install
+}
+
+# Kill all ongoing webpack processes
+killwebpack() {
+  ps aux|grep -i "node\s.*webpack" | awk '{print $2}' | xargs kill -9
+}
+
+# Other/Extras
+whatsmyIP() {
+  dig +short myip.opendns.com @resolver1.opendns.com
+}
+
+camerausedby() {
+	echo "Checking to see who is using the iSight camera… 📷"
+	usedby=$(lsof | grep -w "AppleCamera\|USBVDC\|iSight" | awk '{printf $2"\n"}' | xargs ps)
+	echo -e "Recent camera uses:\n$usedby"
+}
