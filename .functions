@@ -103,10 +103,10 @@ gcommit() {
   g commit -m $1
 }
 
-# Jump over to staging, pull, then go back to the branch you were on and merge with local staging
-merge_staging() {
+# Jump over to master, pull, then go back to the branch you were on and merge with local master
+merge_master() {
 	current="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')"
-	git checkout staging && git pull && git checkout $current && git merge staging
+	git checkout master && git pull origin master && git checkout $current && git merge master
 }
 
 # Create a new serverless project based on my boilerplate
@@ -130,4 +130,12 @@ camerausedby() {
 	echo "Checking to see who is using the iSight camera… 📷"
 	usedby=$(lsof | grep -w "AppleCamera\|USBVDC\|iSight" | awk '{printf $2"\n"}' | xargs ps)
 	echo -e "Recent camera uses:\n$usedby"
+}
+
+# Some configuration stuff for `npm init`
+config_npm() {
+  npm config set init.author.name "Dave Lunny"
+  npm config set init.author.email "d@velunny.com"
+  npm config set init.author.url "himynameisdave.com"
+  npm config set init.license "MIT"
 }
