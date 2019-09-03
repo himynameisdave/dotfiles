@@ -139,3 +139,8 @@ config_npm() {
   npm config set init.author.url "himynameisdave.com"
   npm config set init.license "MIT"
 }
+
+gpgSetLocalKey() {
+  git config --local user.signingkey $1
+  git config --local commit.gpgsign true
+}
