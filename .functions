@@ -144,3 +144,7 @@ gpgSetLocalKey() {
   git config --local user.signingkey $1
   git config --local commit.gpgsign true
 }
+
+versionsof() {
+  npm view $1 versions
+}

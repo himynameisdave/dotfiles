@@ -3,6 +3,7 @@
 alias ..='cd ../'
 alias ...='cd ../../'
 alias ....='cd ../../../'
+alias agents="docker-compose up -d --scale agent=1 agent"
 alias bld='yarn run build'
 alias br='git branch'
 alias branch='git branch'
