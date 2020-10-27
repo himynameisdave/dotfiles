@@ -1,0 +1,73 @@
+#####################################
+#         STARSHIP CONFIG
+#   1. Install starship: https://github.com/himynameisdave/macos-setup#starship
+#   2. Put this file in ~/.config/
+#####################################
+
+# Don't print a new line at the start of the prompt
+add_newline = false
+
+format = """\
+  $nodejs\
+  $username\
+  $hostname\
+  $directory\
+  $git_branch\
+  $git_commit\
+  $git_state\
+  $cmd_duration\
+  $line_break\
+  $jobs\
+  $battery\
+  $time\
+  $character\
+  """
+
+# Replace the "❯" symbol in the prompt with "➜"
+[character]                            # The name of the module we are configuring is "character"
+success_symbol = "[➜](bold green)"     # The "success_symbol" segment is being set to "➜" with the color "bold green"
+
+# Disable the package module, hiding it from the prompt completely
+[package]
+disabled = true
+
+[cmd_duration]
+disabled = true
+
+[aws]
+disabled = true
+
+[gcloud]
+disabled = true
+
+[username]
+disabled = true
+
+[hostname]
+disabled = true
+
+[golang]
+disabled = true
+
+[python]
+disabled = true
+
+[time]
+disabled = true
+
+[battery]
+full_symbol = "🔋"
+charging_symbol = "⚡️"
+discharging_symbol = "💀"
+disabled = false
+[[battery.display]]
+threshold = 25
+style = "bold red"
+
+[nodejs]
+style = "bold yellow"
+format = "[$symbol$version]($style) "
+
+[git_branch]
+style = "bold green"
+format = "on [$symbol$branch]($style) "

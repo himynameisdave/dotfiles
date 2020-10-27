@@ -19,8 +19,6 @@ alias com='git commit -m'
 alias commit='git commit -m'
 alias coverage='yarn run test:coverage && open coverage/lcov-report/index.html -a Google\ Chrome'
 alias cleanpyc='find . -name "*.pyc" -delete'
-# git-cz: https://www.npmjs.com/package/git-cz
-alias cz='git-cz'
 alias deleteDS='find . -name '\''.DS_Store'\'' -type f -delete'
 alias dbr='git branch -D $1'
 alias deletebranch='git branch -D $1'
@@ -48,6 +46,7 @@ alias headname='git rev-parse --abbrev-ref HEAD'
 alias hardcommit='lookMomNoHands'
 alias honk='yarn install && yarn start'
 alias honkloud='rm -rf ./node_modules/ && yarn install && yarn start'
+
 # Local https server: https://paulbrowne.xyz/https-localhost
 alias https-server='http-server --ssl --cert ~/.ssl/localhost.crt --key ~/.ssl/localhost.key -a localhost -o'
 alias ieslint='installeslint'
@@ -70,10 +69,12 @@ alias npmi='npm install'
 alias npmii='rm -rf node_modules package-lock.json yarn.lock && npm install'
 alias o='open'
 alias ovs='open $1 -a Visual\ Studio\ Code'
+
 # Easy access to dotfiles
 alias profile='open ~/.profile'
 alias aliases='open ~/.aliases'
 alias functions='open ~/.functions'
+
 # Safe deleting: https://www.npmjs.com/package/trash-cli
 alias r='trash'
 alias resetdb='fab reset_test_database'
