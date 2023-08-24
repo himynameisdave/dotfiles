@@ -50,12 +50,6 @@ installnode () {
   nvm alias default $1
 }
 
-# Install ESLint and all peerDependencies
-installeslint() {
-  export PKG=eslint-config-7geese;
-  npm info "$PKG@latest" peerDependencies --json | command sed 's/[\{\},]//g ; s/: /@/g' | xargs npm install --save-dev "$PKG@latest"
-}
-
 # More thorough npm install
 npmin() {
   rm -rf node_modules/
@@ -64,20 +58,11 @@ npmin() {
 }
 
 # Search for a git branch
-findBranch() {
+fb() {
   git branch | grep $1
 }
-
-# List changes between your branch and staging
-diffCompareStaging() {
-  current="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')"
-  git diff origin/staging $current
-}
-
-# List changes between your branch and staging
-diffCompareStagingStats() {
-  current="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')"
-  git diff origin/staging $current --shortstat
+findBranch() {
+  git branch | grep $1
 }
 
 # List the files that have been added or modified since your last commit
@@ -99,21 +84,25 @@ gpusho() {
 }
 
 # Commit
+gc() {
+  g commit -m $1
+}
 gcommit() {
   g commit -m $1
 }
-
+# Jump over to develop, pull, then go back to the branch you were on and merge with local develop
+mergeDev() {
+	current="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')"
+	git checkout develop && git pull origin develop && git checkout $current && git merge develop
+}
+merge_main() {
+	current="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')"
+	git checkout main && git pull origin main && git checkout $current && git merge main
+}
 # Jump over to master, pull, then go back to the branch you were on and merge with local master
 merge_master() {
 	current="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')"
 	git checkout master && git pull origin master && git checkout $current && git merge master
-}
-
-# Create a new serverless project based on my boilerplate
-slsnew() {
-  sls create --template-url https://github.com/himynameisdave/dmoney-serverless-boilerplate --path $1
-  cd $1
-  npm install
 }
 
 # Kill all ongoing webpack processes
@@ -147,4 +136,13 @@ gpgSetLocalKey() {
 
 versionsof() {
   npm view $1 versions
+}
+
+# Open the Pull Request URL for your current directory's branch (base branch defaults to main)
+openpr() {
+  github_url=`git remote -v | awk '/fetch/{print $2}' | sed -Ee 's#(git@|git://)#https://#' -e 's@com:@com/@' -e 's%\.git$%%' | awk '/github/'`;
+  branch_name=`git symbolic-ref HEAD | cut -d"/" -f 3,4`;
+  default_branch=`git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'`;
+  pr_url=$github_url"/compare/"$default_branch"..."$branch_name
+  open $pr_url;
 }
