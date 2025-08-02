@@ -146,3 +146,54 @@ openpr() {
   pr_url=$github_url"/compare/"$default_branch"..."$branch_name
   open $pr_url;
 }
+
+# Git Worktrees + Claude
+# Creates a new git worktree and copies over local Claude settings and files
+# @example: claudeWorktree CORE-1234 snippets/CORE-1234/something
+claudeWorktree() {
+  if [ -z "$1" ] || [ -z "$2" ]; then
+    echo "ℹ️ Usage: claudeWorktree <worktree-name-suffix> <branch-name>"
+    echo "💁 Example: claudeWorktree CORE-1234 snippets/CORE-1234/something"
+    return 1
+  fi
+
+  local newdir="../worktree-${1}"
+
+  # Create the worktree
+  git worktree add "$newdir" -b "$2"
+  if [ ! -d "$newdir" ]; then
+    echo "🙅 Failed to create worktree directory: $newdir"
+    return 1
+  fi
+
+  # Copy config.dev file
+  if [ -f "./config/config.dev.json" ]; then
+    mkdir -p "${newdir}/config"
+    cp ./config/config.dev.json "${newdir}/config/config.dev.json"
+  fi
+
+  # Copy local Claude settings directory
+  if [ -d "./.claude" ]; then
+    cp -r ./.claude/ "${newdir}/.claude/"
+  fi
+
+  # Run commands inside the new worktree
+  (
+    cd "$newdir" || return
+    echo "🤖 Running MCP setup commands in ${newdir}..."
+    # Add the mcp server for playwright
+    /Users/himynameisdave/.claude/local/claude mcp add playwright npx @playwright/mcp@latest
+    # Add the mcp server for puppeteer
+    /Users/himynameisdave/.claude/local/claude mcp add puppeteer npx @modelcontextprotocol/server-puppeteer
+    # Add the mcp server for local postgres DB connection
+    /Users/himynameisdave/.claude/local/claude mcp add postgres npx @modelcontextprotocol/server-postgres "postgresql://fossa:fossa123@127.0.0.1:5432/fossa"
+    # Add the sequential thinking mcp
+    /Users/himynameisdave/.claude/local/claude mcp add sequentialthinking npx @modelcontextprotocol/server-sequential-thinking
+    # Add memory, which helps with multi-session
+    /Users/himynameisdave/.claude/local/claude mcp add memory npx @modelcontextprotocol/server-memory
+    # Install the deps
+    yarn install
+  )
+
+  echo "🌴 Successfully created and configured worktree at: ${newdir}"
+}

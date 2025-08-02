@@ -3,7 +3,6 @@
 alias ..='cd ../'
 alias ...='cd ../../'
 alias ....='cd ../../../'
-alias agents="docker-compose up -d --scale agent=1 agent"
 alias bld='yarn run build'
 alias br='git branch'
 alias branch='git branch'
@@ -19,12 +18,15 @@ alias com='git commit -m'
 alias commit='git commit -m'
 alias coverage='yarn run test:coverage && open coverage/lcov-report/index.html -a Google\ Chrome'
 alias cleanpyc='find . -name "*.pyc" -delete'
+# git-cz: https://www.npmjs.com/package/git-cz
+alias cz='git-cz'
 alias deleteDS='find . -name '\''.DS_Store'\'' -type f -delete'
 alias dbr='git branch -D $1'
 alias deletebranch='git branch -D $1'
 alias dc='docker-compose'
 alias dcd='docker-compose down -v'
 alias dcu='docker-compose up'
+alias dcuf='docker-compose up -d core-s3 core-redis core-faktory'
 alias fdiff='gFileDiff'
 alias filediff='gFileDiff'
 alias findbranch="findBranch"
@@ -36,9 +38,11 @@ alias gcz='git-cz'
 alias gdiff='git diff'
 alias goops='git reset HEAD~1'
 alias gpo='gpusho'
+alias gpof='git push origin --force'
 alias gprune='git fetch origin --prune && git branch --merged staging | grep -v '\''staging$'\'' | xargs git branch -d'
 alias grevert='git checkout -- .'
 alias gstash='git stash'
+alias gcp='git cherry-pick'
 alias gunstash='git stash apply'
 alias gupstream='git branch -u origin/$(headname)'
 alias glog='git log --pretty=oneline'
@@ -46,12 +50,9 @@ alias headname='git rev-parse --abbrev-ref HEAD'
 alias hardcommit='lookMomNoHands'
 alias honk='yarn install && yarn start'
 alias honkloud='rm -rf ./node_modules/ && yarn install && yarn start'
-
 # Local https server: https://paulbrowne.xyz/https-localhost
 alias https-server='http-server --ssl --cert ~/.ssl/localhost.crt --key ~/.ssl/localhost.key -a localhost -o'
 alias ieslint='installeslint'
-alias gander='yarn run test:js'
-alias jesty='yarn run test:js'
 alias jo='jojos'
 alias joco='jojos co'
 alias jojo='jojos'
@@ -69,25 +70,38 @@ alias npmi='npm install'
 alias npmii='rm -rf node_modules package-lock.json yarn.lock && npm install'
 alias o='open'
 alias ovs='open $1 -a Visual\ Studio\ Code'
-
 # Easy access to dotfiles
 alias profile='open ~/.profile'
 alias aliases='open ~/.aliases'
 alias functions='open ~/.functions'
-
 # Safe deleting: https://www.npmjs.com/package/trash-cli
 alias r='trash'
 alias resetdb='fab reset_test_database'
-alias sprofile='source ~/.profile'
+alias sprofile='source ~/.zshrc'
 alias stagin='git checkout staging'
 alias staging='git checkout staging'
 alias serve="python -m SimpleHTTPServer"
 alias toweather='curl wttr.in/toronto'
 alias weather='curl wttr.in/vancouver'
 alias yank='git pull'
-alias ygrunt='yarn install --pure-lockfile --force && yarn run dev'
-alias yi='yarn install --pure-lockfile --force'
+alias yi='yarn install'
 alias yr='yarn run'
+alias ya='yarn add'
+alias yad='yarn add -D'
 alias yod='yarn outdated'
-alias yrun='yarn run'
 alias ytho='yarn why'
+
+# FOSSA-specific
+alias agents="docker-compose up -d --scale agent=1 agent"
+alias dev1='CONFIG_FILE="config/config.dev1.json" yarn runboot:dev'
+alias dev2='CONFIG_FILE="config/config.dev2.json" yarn run boot:dev'
+alias icons="open ./icons/icons-directory.html -a Google\ Chrome"
+alias ybd="yarn run boot:dev"
+alias yrbd="yarn install && yarn run boot:dev"
+alias up-core='docker compose up -d core-db core-migrate core-s3 core-redis core-smtp core-faktory fetchers-api core-testdb core-worker --force-recreate'
+
+# Claude + Git Worktrees
+# See .functions > claudeWorktree for usage
+alias gwt="git worktree"
+alias cwt="claudeWorktree"
+alias claude="/Users/himynameisdave/.claude/local/claude"
